@@ -23,6 +23,7 @@ class Field(NamedTuple):
 # TODO: create custom exceptions for table operations
 class Table:
     def __init__(self, columns):
+        self.rows = []
         self.fields = {}
         self.index_to_name = []
 
@@ -43,3 +44,27 @@ class Table:
             self.index_to_name.append(field)
 
         self.index_to_name = tuple(self.index_to_name)
+
+    def insert(self, values: dict):
+        """
+        :param values: dict that contains names of fields as keys and values for fields as values.
+        example: dict(id=12, name='John Williams')
+        """
+        if not isinstance(values, dict):
+            raise ValueError('values should be dictionary')
+
+        if len(values) != len(self.fields):
+            raise ValueError('number of values in insert is not equal to fields of the table')
+
+        if not all(field.name in values and field.type.is_valid(values[field.name]) for field in self.fields.values()):
+            raise ValueError()
+
+        for field in self.fields.values():
+            if field.name not in values:
+                raise ValueError('missing field name')
+
+            if not field.type.is_valid(values[field.name]):
+                raise ValueError('invalid value for field')
+
+        # TODO: copy dict
+        self.rows.append(values)

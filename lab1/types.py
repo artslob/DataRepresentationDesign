@@ -5,14 +5,7 @@ class FieldType:
     _type = None
 
     @classmethod
-    def validate_value(cls, value):
-        if not cls._is_valid(value):
-            raise ValueError(f'value {value!r} is not valid')
-
-        return value
-
-    @classmethod
-    def _is_valid(cls, value):
+    def is_valid(cls, value):
         return isinstance(value, cls._type)
 
 
