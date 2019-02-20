@@ -20,15 +20,19 @@ class Field(NamedTuple):
     type: Type[FieldType]
 
 
+# TODO: create custom exceptions for table operations
 class Table:
     def __init__(self, columns):
         self.fields = {}
         self.index_to_name = []
 
+        if not len(columns):
+            raise ValueError('empty list of columns')
+
         for i, column in enumerate(columns):
             if not isinstance(column, Column):
                 raise ValueError(f'{column!r} is not column')
-            if column.type is FieldType or not issubclass(column.type, FieldType):
+            if column.type is FieldType or type(column.type) != type or not issubclass(column.type, FieldType):
                 raise ValueError('type should be subclass of base field type')
 
             field = Field(index=i, name=column.name, type=column.type)
