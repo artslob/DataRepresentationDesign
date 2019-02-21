@@ -5,3 +5,7 @@ class Lab1BaseError(Exception):
 
 class TableCreationError(Lab1BaseError):
     pass
+
+
+class TableInsertError(Lab1BaseError):
+    pass

@@ -1,6 +1,6 @@
 from typing import NamedTuple, Type
 
-from lab1.exceptions import TableCreationError
+from lab1.exceptions import TableCreationError, TableInsertError
 from lab1.types import FieldType
 
 
@@ -53,18 +53,18 @@ class Table:
         example: dict(id=12, name='John Williams')
         """
         if not isinstance(values, dict):
-            raise ValueError('values should be dictionary')
+            raise TableInsertError('values should be dictionary')
 
         if len(values) != len(self.fields):
-            raise ValueError('number of values in insert is not equal to fields of the table')
+            raise TableInsertError('number of values in insert is not equal to fields of the table')
 
         for field in self.fields.values():
             if field.name not in values:
-                raise ValueError(f'missing field name: {field.name!r}')
+                raise TableInsertError(f'missing field name: {field.name!r}')
 
             value = values[field.name]
             if not field.type.is_valid(value):
-                raise ValueError(f'invalid value for field: {value!r}')
+                raise TableInsertError(f'invalid value for field: {value!r}')
 
         # TODO: copy dict
         self.rows.append(values)
