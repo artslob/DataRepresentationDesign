@@ -33,6 +33,8 @@ class Table:
         for i, column in enumerate(columns):
             if not isinstance(column, Column):
                 raise TableCreationError(f'{column!r} is not column')
+            if not isinstance(column.name, str):
+                raise TableCreationError(f'column name should be string: {column.name!r}')
             if column.type is FieldType or type(column.type) != type or not issubclass(column.type, FieldType):
                 raise TableCreationError('type should be subclass of base field type')
 
