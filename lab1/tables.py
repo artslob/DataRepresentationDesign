@@ -1,5 +1,6 @@
 from typing import NamedTuple, Type
 
+from lab1.exceptions import TableCreationError
 from lab1.types import FieldType
 
 
@@ -20,7 +21,6 @@ class Field(NamedTuple):
     type: Type[FieldType]
 
 
-# TODO: create custom exceptions for table operations
 class Table:
     def __init__(self, columns):
         self.rows = []
@@ -28,17 +28,17 @@ class Table:
         self.index_to_name = []
 
         if not len(columns):
-            raise ValueError('empty list of columns')
+            raise TableCreationError('empty list of columns')
 
         for i, column in enumerate(columns):
             if not isinstance(column, Column):
-                raise ValueError(f'{column!r} is not column')
+                raise TableCreationError(f'{column!r} is not column')
             if column.type is FieldType or type(column.type) != type or not issubclass(column.type, FieldType):
-                raise ValueError('type should be subclass of base field type')
+                raise TableCreationError('type should be subclass of base field type')
 
             field = Field(index=i, name=column.name, type=column.type)
             if field.name in self.fields:
-                raise ValueError(f'name {field.name!r} already exist')
+                raise TableCreationError(f'name {field.name!r} already exist')
 
             self.fields[field.name] = field
             self.index_to_name.append(field)
