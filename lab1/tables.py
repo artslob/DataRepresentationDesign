@@ -36,7 +36,7 @@ class Table:
             if not isinstance(column.name, str):
                 raise TableCreationError(f'column name should be string: {column.name!r}')
             if column.type is FieldType or type(column.type) != type or not issubclass(column.type, FieldType):
-                raise TableCreationError('type should be subclass of base field type')
+                raise TableCreationError(f'type should be subclass of base field type: {column.type!r}')
 
             field = Field(index=i, name=column.name, type=column.type)
             if field.name in self.fields:
