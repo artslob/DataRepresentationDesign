@@ -1,3 +1,4 @@
+import copy
 from typing import NamedTuple, Type
 
 from lab1.exceptions import TableCreationError, TableInsertError
@@ -66,5 +67,4 @@ class Table:
             if not field.type.is_valid(value):
                 raise TableInsertError(f'invalid value for field: {value!r}')
 
-        # TODO: copy dict
-        self.rows.append(values)
+        self.rows.append(copy.deepcopy(values))

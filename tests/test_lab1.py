@@ -68,7 +68,10 @@ def test_insert_mutability():
     table.insert(value)
     assert table.rows[0] == value
     value['id'] = 5
-    assert table.rows[0]['id'] == 5
+    value['name'] = 'Test name'
+    assert table.rows[0]['id'] == 3
+    assert 'name' not in table.rows[0]
+    assert len(table.rows) == 1
 
 
 @pytest.mark.parametrize('value', [dict, str, list, 12, 'string', tuple(), []])
