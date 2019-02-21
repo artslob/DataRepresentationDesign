@@ -27,6 +27,7 @@ def test_create_empty_table():
         Table(columns=[])
 
 
+# noinspection PyTypeChecker
 @pytest.mark.parametrize('wrong_value,expected_exc', [
     [Column, 'not column'],
     [int, 'not column'],
@@ -78,6 +79,7 @@ def test_insert_mutability():
 def test_insert_not_dict(value):
     table = Table(columns=(Column('id', IntType),))
     with pytest.raises(TableInsertError, match='should be dictionary'):
+        # noinspection PyTypeChecker
         table.insert(value)
 
 
