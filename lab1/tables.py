@@ -58,9 +58,6 @@ class Table:
         if len(values) != len(self.fields):
             raise ValueError('number of values in insert is not equal to fields of the table')
 
-        if not all(field.name in values and field.type.is_valid(values[field.name]) for field in self.fields.values()):
-            raise ValueError()
-
         for field in self.fields.values():
             if field.name not in values:
                 raise ValueError('missing field name')
