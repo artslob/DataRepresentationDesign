@@ -60,10 +60,11 @@ class Table:
 
         for field in self.fields.values():
             if field.name not in values:
-                raise ValueError('missing field name')
+                raise ValueError(f'missing field name: {field.name!r}')
 
-            if not field.type.is_valid(values[field.name]):
-                raise ValueError('invalid value for field')
+            value = values[field.name]
+            if not field.type.is_valid(value):
+                raise ValueError(f'invalid value for field: {value!r}')
 
         # TODO: copy dict
         self.rows.append(values)
