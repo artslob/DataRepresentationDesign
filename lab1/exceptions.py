@@ -15,5 +15,9 @@ class TableSelectError(Lab1BaseError):
     pass
 
 
+class TableUpdateError(Lab1BaseError):
+    pass
+
+
 class ConditionError(Lab1BaseError):
     pass

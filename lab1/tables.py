@@ -2,7 +2,7 @@ import copy
 from typing import NamedTuple, Type
 
 import lab1.conditions as conditions
-from lab1.exceptions import TableCreationError, TableInsertError, ConditionError, TableSelectError
+from lab1.exceptions import TableCreationError, TableInsertError, ConditionError, TableSelectError, TableUpdateError
 from lab1.types import FieldType
 
 
@@ -119,3 +119,22 @@ class Table:
             result.append([row[field] for field in fields])
 
         return result
+
+    def update(self, values: dict, condition: conditions.Condition = None):
+        """
+        :param values: dict: {key=field name: str, value=new value to assign to field, ...}
+        :param condition: optional condition. example: (0 < table.fields['id']) & (table.fields['id'] < 2)
+        """
+        for field, value in values.items():
+            if field not in self.fields:
+                raise TableUpdateError(f'field name {field!r} not exist in table {self!r}')
+
+            if not self.fields[field].type.is_valid(value):
+                raise TableUpdateError(f'not valid value {value!r} for field {field!r}')
+
+        for row in self.rows:
+            if condition and not condition.evaluate(self, row):
+                continue
+
+            for field, value in values.items():
+                row[field] = value
