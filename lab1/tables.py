@@ -102,6 +102,11 @@ class Table:
         self.rows.append(copy.deepcopy(values))
 
     def select(self, fields, condition: conditions.Condition = None):
+        """
+        :param fields: iterable of field names of type 'str'. example: ['id', 'name']
+        :param condition: optional condition. example: (0 < table.fields['id']) & (table.fields['id'] < 2)
+        :return: [ [field1, field2, ...], [...], ... ]
+        """
         for field in fields:
             if field not in self.fields:
                 raise TableSelectError(f'field name {field!r} not exist in table {self!r}')
