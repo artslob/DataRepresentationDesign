@@ -138,3 +138,15 @@ class Table:
 
             for field, value in values.items():
                 row[field] = value
+
+    def delete(self, condition: conditions.Condition = None):
+        """
+        Delete rows that match to optional condition. If condition is None, delete all rows in table.
+        :param condition: optional condition. example: (0 < table.fields['id']) & (table.fields['id'] < 2)
+        """
+        if not condition:
+            del self.rows[:]
+
+        for i, row in enumerate(self.rows):
+            if condition.evaluate(self, row):
+                del self.rows[i]
