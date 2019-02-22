@@ -9,3 +9,11 @@ class TableCreationError(Lab1BaseError):
 
 class TableInsertError(Lab1BaseError):
     pass
+
+
+class TableSelectError(Lab1BaseError):
+    pass
+
+
+class ConditionError(Lab1BaseError):
+    pass

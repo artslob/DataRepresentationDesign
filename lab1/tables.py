@@ -1,7 +1,8 @@
 import copy
 from typing import NamedTuple, Type
 
-from lab1.exceptions import TableCreationError, TableInsertError
+import lab1.conditions as conditions
+from lab1.exceptions import TableCreationError, TableInsertError, ConditionError, TableSelectError
 from lab1.types import FieldType
 
 
@@ -20,6 +21,37 @@ class Field(NamedTuple):
     index: int
     name: str
     type: Type[FieldType]
+
+    def __lt__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '<', other)
+
+    def __le__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '<=', other)
+
+    def __eq__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '==', other)
+
+    def __ne__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '!=', other)
+
+    def __gt__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '>', other)
+
+    def __ge__(self, other):
+        self.check_operands(other)
+        return conditions.BinaryCondition(self, '>=', other)
+
+    def check_operands(self, other):
+        if not self.type.is_valid(other) and not isinstance(other, Field):
+            raise ConditionError(f'cannot compare {self!r} and {other!r}: different types')
+
+        if isinstance(other, Field) and self.type != other.type:
+            raise ConditionError(f'cannot compare {self!r} and {other!r}: different types')
 
 
 class Table:
@@ -68,3 +100,17 @@ class Table:
                 raise TableInsertError(f'invalid value for field: {value!r}')
 
         self.rows.append(copy.deepcopy(values))
+
+    def select(self, fields, condition: conditions.Condition = None):
+        for field in fields:
+            if field not in self.fields:
+                raise TableSelectError(f'field name {field!r} not exist in table {self!r}')
+
+        result = []
+        for row in self.rows:
+            if condition and not condition.evaluate(self, row):
+                continue
+
+            result.append([row[field] for field in fields])
+
+        return result
