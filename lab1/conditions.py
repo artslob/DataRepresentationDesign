@@ -25,27 +25,22 @@ class BinaryCondition(Condition):
         if op in ('<', '<=', '==', '!=', '>', '>=') and (isinstance(left, Condition) or isinstance(right, Condition)):
             raise ConditionError(f'comparision does not support conditions')
 
+    @staticmethod
+    def _evaluate_arg(arg, table: 'tables.Table', row: dict):
+        if isinstance(arg, tables.Field):
+            if arg.name not in table.fields:
+                raise ConditionError(f'field {arg!r} not in table {table!r}')
+            return row[arg.name]
+
+        elif isinstance(arg, Condition):
+            return arg.evaluate(table, row)
+
+        # means its basic type
+        return arg
+
     def evaluate(self, table: 'tables.Table', row: dict):
-        # TODO move duplicate code to function
-        if isinstance(self.left, tables.Field):
-            if self.left.name not in table.fields:
-                raise ConditionError(f'field {self.left!r} not in table {table!r}')
-
-            left_result = row[self.left.name]
-        elif isinstance(self.left, Condition):
-            left_result = self.left.evaluate(table, row)
-        else:
-            left_result = self.left
-
-        if isinstance(self.right, tables.Field):
-            if self.right.name not in table.fields:
-                raise ConditionError(f'field {self.right!r} not in table {table!r}')
-
-            right_result = row[self.right.name]
-        elif isinstance(self.right, Condition):
-            right_result = self.right.evaluate(table, row)
-        else:
-            right_result = self.right
+        left_result = self._evaluate_arg(self.left, table, row)
+        right_result = self._evaluate_arg(self.right, table, row)
 
         op = self.op
 
