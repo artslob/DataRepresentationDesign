@@ -5,7 +5,7 @@ from lab1.types import IntType, StringType, FloatType
 
 
 @pytest.fixture
-def default_table():
+def table_factory():
     def create_table():
         table = Table(columns=(Column('id', IntType), Column('name', StringType), Column('age', FloatType),))
         table.insert(dict(id=1, name='George', age=35.5))
@@ -15,8 +15,12 @@ def default_table():
     return create_table
 
 
-def test_delete(default_table):
-    table = default_table()
+@pytest.fixture
+def table(table_factory):
+    return table_factory()
+
+
+def test_delete(table):
     assert len(table.rows) == 2
     table.delete()
     assert len(table.rows) == 0
@@ -24,8 +28,7 @@ def test_delete(default_table):
     assert len(table.rows) == 0
 
 
-def test_delete_condition(default_table):
-    table = default_table()
+def test_delete_condition(table):
     assert len(table.rows) == 2
     table.delete(table.fields['name'] == 'Fred')
     assert len(table.rows) == 1
