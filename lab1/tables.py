@@ -56,6 +56,7 @@ class Field(NamedTuple):
 
 class Table:
     def __init__(self, columns):
+        # TODO change columns to dict
         self.rows = []
         self.fields = {}
         self.index_to_name = []
