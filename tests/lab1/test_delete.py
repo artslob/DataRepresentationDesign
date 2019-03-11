@@ -4,6 +4,9 @@ from lab1.tables import Table, Column
 from lab1.types import IntType, StringType, FloatType
 
 
+# TODO move table fixtures to conftest
+
+
 @pytest.fixture
 def table_factory():
     def create_table():
